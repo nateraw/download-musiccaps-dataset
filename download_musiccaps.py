@@ -6,6 +6,7 @@ Requires:
     - yt-dlp
     - datasets[audio]
     - torchaudio
+    - fire
 """
 import subprocess
 import os
@@ -86,6 +87,7 @@ def main(
 
         example['audio'] = outfile_path
         example['download_status'] = status
+        example['download_log'] = log if not status else None
         return example
 
     return ds.map(
@@ -97,10 +99,5 @@ def main(
 
 
 if __name__ == '__main__':
-    ds = main(
-        './music_data',
-        sampling_rate=44100,
-        limit=None,
-        num_proc=16,
-        writer_batch_size=1000,
-    )
+    from fire import Fire
+    ds = Fire(main, serialize=lambda x: "")
